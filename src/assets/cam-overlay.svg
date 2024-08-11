@@ -1,0 +1,24 @@
+<svg width="100%" height="100%" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <!-- Outer transparent background to darken the non-A4 area -->
+    <rect x="0" y="0" width="100%" height="100%" fill="rgba(0, 0, 0, 0.5)"/>
+
+    <!-- Inner transparent rectangle to make the A4 area clear -->
+    <rect x="5%" y="5%" width="90%" height="90%" fill="none"/>
+
+    <!-- Corner markers for better alignment -->
+    <!-- Top-left corner -->
+    <line x1="5%" y1="5%" x2="10%" y2="5%" stroke="red" stroke-width="2"/>
+    <line x1="5%" y1="5%" x2="5%" y2="10%" stroke="red" stroke-width="2"/>
+
+    <!-- Top-right corner -->
+    <line x1="95%" y1="5%" x2="90%" y2="5%" stroke="red" stroke-width="2"/>
+    <line x1="95%" y1="5%" x2="95%" y2="10%" stroke="red" stroke-width="2"/>
+
+    <!-- Bottom-left corner -->
+    <line x1="5%" y1="95%" x2="10%" y2="95%" stroke="red" stroke-width="2"/>
+    <line x1="5%" y1="95%" x2="5%" y2="90%" stroke="red" stroke-width="2"/>
+
+    <!-- Bottom-right corner -->
+    <line x1="95%" y1="95%" x2="90%" y2="95%" stroke="red" stroke-width="2"/>
+    <line x1="95%" y1="95%" x2="95%" y2="90%" stroke="red" stroke-width="2"/>
+</svg>

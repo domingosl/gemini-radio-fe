@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+body {
+    font-family: "DM Sans", sans-serif !important;
+    color: white;
+    background: rgb(9, 9, 9);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+.border {
+    box-sizing: border-box !important;
+    border: 1px solid hsl(var(--border)) !important;
+}
+
+input[type="file"] {
+    color: white; /* Sets the text color of the chosen file name */
+}
+
+input[type="file"]::file-selector-button {
+    color: white; /* Sets the text color of the button */
+}
+
+/* For older versions of Firefox */
+input[type="file"]::-moz-file-upload-button {
+    color: white;
+}
