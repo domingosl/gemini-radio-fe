@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from "@/components/theme-provider";
 import Layout from '@/Layout';
+
+import useSettingsInitialization from '@/hooks/useSettingsInitialization';
+
 import PodcastList from '@/pages/PodcastList';
 import PodcastPlayer from '@/pages/PodcastPlayer';
 import NewPodcast from '@/pages/NewPodcast';
-import Profile from '@/pages/Profile';
+import PodcastSettings from '@/pages/PodcastSettings';
+
 import SplashScreen from '@/components/SplashScreen';
 import apiClient from '@/helpers/api-client';
 import { Toaster } from "@/components/ui/toaster";
@@ -14,6 +18,9 @@ const SPLASH_SCREEN_ENABLED = import.meta.env.VITE_ENABLE_SPLASH_SCREEN === 'tru
 const MIN_SPLASH_DURATION = 3000; // 3 seconds in milliseconds
 
 const App = () => {
+
+    useSettingsInitialization()
+
     const [isLoading, setIsLoading] = useState(SPLASH_SCREEN_ENABLED);
     const [showSplash, setShowSplash] = useState(SPLASH_SCREEN_ENABLED);
 
@@ -43,23 +50,6 @@ const App = () => {
         checkApiStatus();
     }, []);
 
-    if (!SPLASH_SCREEN_ENABLED) {
-        return (
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <Router>
-                    <Routes>
-                        <Route path="/" element={<Layout />}>
-                            <Route index element={<PodcastList />} />
-                            <Route path="player/:id" element={<PodcastPlayer />} />
-                            <Route path="new-podcast" element={<NewPodcast />} />
-                            <Route path="profile" element={<Profile />} />
-                        </Route>
-                    </Routes>
-                </Router>
-                <Toaster />
-            </ThemeProvider>
-        );
-    }
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -71,8 +61,9 @@ const App = () => {
                             <Route index element={<PodcastList />} />
                             <Route path="player/:id" element={<PodcastPlayer />} />
                             <Route path="new-podcast" element={<NewPodcast />} />
-                            <Route path="profile" element={<Profile />} />
+                            <Route path="settings" element={<PodcastSettings />} />
                         </Route>
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </Router>
             )}

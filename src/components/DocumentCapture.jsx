@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Camera from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
-import { Camera as CameraIcon, Upload, X, Check } from 'lucide-react';
+import { Camera as CameraIcon, Upload, X, Check, InfoIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const DocumentCapture = ({ onCapture, onFinish, capturedCount }) => {
@@ -77,8 +77,18 @@ const DocumentCapture = ({ onCapture, onFinish, capturedCount }) => {
 
     return (
         <div className="flex flex-col items-center justify-center h-full space-y-4">
+            <h2 className="text-2xl font-bold">New podcast episode</h2>
+            <div
+                className="bg-gray-800 border-l-4 border-blue-500 text-gray-300 p-4 rounded-r mb-4 flex items-start w-80">
+                <InfoIcon className="h-5 w-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"/>
+                <p className="text-sm">
+                    In this section, you can upload or photograph letters received from your audience.
+                    These letters will be used to create a podcast based on the questions they contain.
+                </p>
+            </div>
+
             <Button onClick={() => setIsCameraOpen(true)} className="w-64 h-16 text-lg" variant="secondary">
-                <CameraIcon className="mr-2 h-6 w-6" /> Capture Document
+                <CameraIcon className="mr-2 h-6 w-6"/> Capture Letter
             </Button>
             <input
                 type="file"
@@ -88,7 +98,7 @@ const DocumentCapture = ({ onCapture, onFinish, capturedCount }) => {
                 className="hidden"
             />
             <Button onClick={() => fileInputRef.current.click()} className="w-64 h-16 text-lg" variant="secondary">
-                <Upload className="mr-2 h-6 w-6" /> Upload File
+                <Upload className="mr-2 h-6 w-6" /> Upload Letter
             </Button>
             {capturedCount > 0 && (
                 <Button onClick={onFinish} className="w-64 h-16 text-lg" variant="default">

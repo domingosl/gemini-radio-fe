@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Headphones, PlusCircle, User } from 'lucide-react';
+import { Headphones, PlusCircle, Settings } from 'lucide-react';
 
 const Navigation = () => {
     const location = useLocation();
@@ -8,7 +8,7 @@ const Navigation = () => {
     const navItems = [
         { icon: Headphones, path: '/' },
         { icon: PlusCircle, path: '/new-podcast' },
-        { icon: User, path: '/profile' },
+        { icon: Settings, path: '/settings' },
     ];
 
     return (

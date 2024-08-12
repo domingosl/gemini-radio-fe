@@ -8,7 +8,7 @@ const Layout = () => {
             <header className="bg-gray-950 p-4 flex items-center">
                 <div className="flex items-center space-x-2">
                     <div className="bg-white rounded-full p-1 w-8 h-8 flex items-center justify-center">
-                        <span className="text-black text-xl font-bold">♪</span>
+                        <span className="text-black text-xl font-bold">G</span>
                     </div>
                     <span className="text-white text-xl font-light tracking-wide">Gemini Radio</span>
                 </div>

@@ -1,10 +1,19 @@
 import { create } from 'zustand'
+import apiClient from "@/helpers/api-client.js";
 
 export const usePodcastStore = create((set, get) => ({
     podcasts: [],
     currentPodcast: null,
     isPlaying: false,
     audioRef: null,
+    refresh: () => new Promise((resolve) => {
+        apiClient.getPodcasts().then(
+            (podcasts)=> {
+                set({podcasts})
+                resolve()
+            }
+        )
+    }),
     setCurrentPodcast: (id) => set(state => ({
         currentPodcast: state.podcasts.find(p => p.id === id)
     })),

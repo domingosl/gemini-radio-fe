@@ -1,7 +1,5 @@
 import axios from 'axios';
-import pLimit from 'p-limit';
-
-const limit = pLimit(2); // Limit to 2 concurrent requests
+import { useToast } from "@/components/ui/use-toast";
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -9,6 +7,21 @@ const apiClient = axios.create({
         'gemini-radio-client-version': '1'
     }
 });
+
+apiClient.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response && error.response.status === 403) {
+            const { toast } = useToast();
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.response.data.message || "Access forbidden",
+            });
+        }
+        return Promise.reject(error);
+    }
+);
 
 const scanLetter = async (image) => {
     try {
@@ -27,7 +40,7 @@ export default {
     },
     scanLetter,
     generatePodcast: async (letters) => {
-        const response = await apiClient.post('/podcast/generate', { letters });
+        const response = await apiClient.post('/podcast/generate', { letters, config: JSON.parse(localStorage.getItem('podcastSettings')) });
         return response.data;
     },
     getPodcasts: async () => {
@@ -45,5 +58,14 @@ export default {
             console.error('Error getting podcast status:', error);
             throw error;
         }
-    }
+    },
+    getBackgroundMusic: async () => {
+        try {
+            const response = await apiClient.get('/music');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching background music:', error);
+            throw error;
+        }
+    },
 };

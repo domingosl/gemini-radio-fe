@@ -14,8 +14,12 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import PodcastGeneration from '@/components/PodcastGeneration';
+import { usePodcastStore } from '@/store/podcastStore';
+import {useNavigate} from "react-router-dom";
 
 const NewPodcast = () => {
+    const { setCurrentPodcast, refresh } = usePodcastStore();
+    const navigate = useNavigate();
     const [capturedDocuments, setCapturedDocuments] = useState([]);
     const [transcriptions, setTranscriptions] = useState([]);
     const [isCapturing, setIsCapturing] = useState(true);
@@ -54,6 +58,11 @@ const NewPodcast = () => {
         setIsGenerating(false);
     };
 
+    const handleListenDownload = async () => {
+        await refresh()
+        setCurrentPodcast(generatedPodcast.id)
+        navigate(`/player/${generatedPodcast.id}`, { state: { autoplay: true } });
+    };
 
     if (isCapturing) {
         return (
@@ -78,11 +87,11 @@ const NewPodcast = () => {
     if (generatedPodcast) {
         return (
             <div className="p-4 space-y-4">
-                <h2 className="text-2xl font-bold">Podcast Generated</h2>
+                <h2 className="text-2xl font-bold">Podcast episode Generated</h2>
                 <img src={generatedPodcast.imageURL} alt="Podcast Cover" className="w-full h-auto rounded-lg" />
                 <h3 className="text-xl font-semibold">{generatedPodcast.title}</h3>
                 <p className="text-sm text-muted-foreground">{generatedPodcast.synopsis}</p>
-                <Button onClick={() => {/* Handle finish */}} className="w-full">
+                <Button onClick={handleListenDownload} className="w-full">
                     Listen/Download
                 </Button>
             </div>
@@ -92,11 +101,11 @@ const NewPodcast = () => {
     return (
         <div className="h-full">
             <div className="p-4">
-                <h2 className="text-2xl font-bold mb-4">Captured Documents ({capturedDocuments.length})</h2>
+                <h2 className="text-2xl font-bold mb-4">Captured Letters ({capturedDocuments.length})</h2>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     {capturedDocuments.map((doc, index) => (
                         <div key={index} className="relative">
-                            <img src={doc} alt={`Document ${index + 1}`} className="w-full h-40 object-cover rounded"/>
+                            <img src={doc} alt={`Letter ${index + 1}`} className="w-full h-40 object-cover rounded"/>
                             <Button
                                 variant="secondary"
                                 size="sm"
@@ -113,7 +122,7 @@ const NewPodcast = () => {
                         Capture More
                     </Button>
                     <Button onClick={handleScanDocuments} disabled={capturedDocuments.length === 0}>
-                        Scan Documents
+                        Scan Letters
                     </Button>
                 </div>
 
@@ -122,7 +131,7 @@ const NewPodcast = () => {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the captured document.
+                                This action cannot be undone. This will permanently delete the captured letter.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

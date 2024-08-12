@@ -17,20 +17,32 @@ const PodcastPlayer = () => {
         setIsPlaying,
         setAudioRef,
         playPodcast,
+        refresh,
+        podcasts,
         stopPlayback
     } = usePodcastStore();
 
     const location = useLocation();
     const shouldAutoplay = location.state?.autoplay;
+    const [isLoading, setIsLoading] = useState(true);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
     const [waveform, setWaveform] = useState([]);
     const audioRef = useRef(new Audio());
 
     useEffect(() => {
+        if(!podcasts.length)
+            refresh().then(()=> {
+                setIsLoading(false)
+            })
+        else
+            setIsLoading(false)
+    }, []);
+
+    useEffect(() => {
         setCurrentPodcast(id);
         setAudioRef(audioRef.current);
-    }, [id, setCurrentPodcast, setAudioRef]);
+    }, [id, setCurrentPodcast, setAudioRef, isLoading]);
 
     useEffect(() => {
         if (currentPodcast) {
@@ -100,7 +112,7 @@ const PodcastPlayer = () => {
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
-    if (!currentPodcast) return <Navigate to="/" />;
+    if(isLoading || !currentPodcast) return (<>load</>)
 
     return (
         <div className="flex flex-col h-full overflow-y-auto">
