@@ -1,0 +1,14 @@
+services:
+  gemini-radio-fe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "2999:80"
+    networks:
+      - internal-proxy-network
+
+networks:
+  internal-proxy-network:
+    name: internal-proxy-network
+    driver: bridge
