@@ -1,5 +1,7 @@
-import axios from 'axios';
-import { useToast } from "@/components/ui/use-toast";
+import axios from 'axios'
+
+const getJudgeCode = () => localStorage.getItem('judgeCode');
+
 
 const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -11,17 +13,20 @@ const apiClient = axios.create({
 apiClient.interceptors.response.use(
     response => response,
     error => {
-        if (error.response && error.response.status === 403) {
-            const { toast } = useToast();
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: error.response.data.message || "Access forbidden",
-            });
-        }
+        alert(error.response.data.message || "Access forbidden")
         return Promise.reject(error);
     }
 );
+
+apiClient.interceptors.request.use(config => {
+    const judgeCode = getJudgeCode();
+    if (judgeCode) {
+        config.headers['x-code'] = judgeCode;
+    }
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
 
 const scanLetter = async (image) => {
     try {

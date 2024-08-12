@@ -13,6 +13,8 @@ import PodcastSettings from '@/pages/PodcastSettings';
 import SplashScreen from '@/components/SplashScreen';
 import apiClient from '@/helpers/api-client';
 import { Toaster } from "@/components/ui/toaster";
+import JudgeCodeModal from '@/components/JudgeCodeModal';
+
 
 const SPLASH_SCREEN_ENABLED = import.meta.env.VITE_ENABLE_SPLASH_SCREEN === 'true';
 const MIN_SPLASH_DURATION = 3000; // 3 seconds in milliseconds
@@ -20,9 +22,17 @@ const MIN_SPLASH_DURATION = 3000; // 3 seconds in milliseconds
 const App = () => {
 
     useSettingsInitialization()
-
+    const [judgeCode, setJudgeCode] = useState(localStorage.getItem('judgeCode'));
+    const [showModal, setShowModal] = useState(!judgeCode);
     const [isLoading, setIsLoading] = useState(SPLASH_SCREEN_ENABLED);
     const [showSplash, setShowSplash] = useState(SPLASH_SCREEN_ENABLED);
+
+    const handleJudgeCodeSubmit = (code) => {
+        localStorage.setItem('judgeCode', code);
+        setJudgeCode(code);
+        setShowModal(false);
+    };
+
 
     useEffect(() => {
         if (!SPLASH_SCREEN_ENABLED) {
@@ -53,7 +63,8 @@ const App = () => {
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            {showSplash && <SplashScreen isLoading={isLoading} />}
+            <JudgeCodeModal isOpen={showModal} onSubmit={handleJudgeCodeSubmit} />
+            {!showModal && showSplash && <SplashScreen isLoading={isLoading} />}
             {!isLoading && (
                 <Router>
                     <Routes>
