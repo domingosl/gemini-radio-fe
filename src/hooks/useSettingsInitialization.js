@@ -8,6 +8,7 @@ const defaultSettings = {
     lettersAddress: '',
     backgroundMusic: '1',
     weatherInfo: 'Never',
+    includeIntroMusic: false
 };
 
 const useSettingsInitialization = () => {

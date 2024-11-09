@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Select,
     SelectContent,
@@ -37,11 +38,11 @@ const PodcastSettings = () => {
             setSettings(initialSettings);
 
             try {
-                const music = await apiClient.getBackgroundMusic();
-                setMusicOptions([{ id: "-1", title: 'AI Selected' }, ...music]);
+                const music = [{ id: "-1", title: 'AI Selected' }, ...await apiClient.getBackgroundMusic()];
+                setMusicOptions(music);
 
-                const currentMusicId = initialSettings.backgroundMusic || musicOptions[0]?.id.toString();
-                const selectedMusic = musicOptions.find(m => m.id.toString() === currentMusicId) || musicOptions[0];
+                const currentMusicId = initialSettings.backgroundMusic || music[0]?.id.toString();
+                const selectedMusic = music.find(m => m.id.toString() === currentMusicId) || music[0];
 
                 if (selectedMusic.id !== "-1") {
                     setCurrentSample(selectedMusic);
@@ -61,6 +62,10 @@ const PodcastSettings = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setSettings(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleCheckboxChange = (checked) => {
+        setSettings(prev => ({ ...prev, includeIntroMusic: checked }));
     };
 
     const handleMusicChange = (value) => {
@@ -95,12 +100,13 @@ const PodcastSettings = () => {
                     <label className="block mb-1">Podcast Name</label>
                     <div className="flex items-center">
                         <Input
-                            name="podcastName"
-                            value={settings.podcastName}
-                            onChange={handleInputChange}
-                            className="flex-grow"
+                          name="podcastName"
+                          value={settings.podcastName}
+                          onChange={handleInputChange}
+                          className="flex-grow"
                         />
-                        <ClickableTooltip content="This is the name that will be mentioned by the podcast hosts." />
+                        <ClickableTooltip
+                          content="This is the name that will be mentioned by the podcast hosts."/>
                     </div>
                 </div>
 
@@ -108,12 +114,13 @@ const PodcastSettings = () => {
                     <label className="block mb-1">Host One Name (Him)</label>
                     <div className="flex items-center">
                         <Input
-                            name="hostOneName"
-                            value={settings.hostOneName}
-                            onChange={handleInputChange}
-                            className="flex-grow"
+                          name="hostOneName"
+                          value={settings.hostOneName}
+                          onChange={handleInputChange}
+                          className="flex-grow"
                         />
-                        <ClickableTooltip content="This will be the name of the male host of the podcast." />
+                        <ClickableTooltip
+                          content="This will be the name of the male host of the podcast."/>
                     </div>
                 </div>
 
@@ -121,12 +128,13 @@ const PodcastSettings = () => {
                     <label className="block mb-1">Host Two Name (Her)</label>
                     <div className="flex items-center">
                         <Input
-                            name="hostTwoName"
-                            value={settings.hostTwoName}
-                            onChange={handleInputChange}
-                            className="flex-grow"
+                          name="hostTwoName"
+                          value={settings.hostTwoName}
+                          onChange={handleInputChange}
+                          className="flex-grow"
                         />
-                        <ClickableTooltip content="This will be the name of the female host of the podcast." />
+                        <ClickableTooltip
+                          content="This will be the name of the female host of the podcast."/>
                     </div>
                 </div>
 
@@ -134,12 +142,30 @@ const PodcastSettings = () => {
                     <label className="block mb-1">Letters Address</label>
                     <div className="flex items-center">
                         <Textarea
-                            name="lettersAddress"
-                            value={settings.lettersAddress}
-                            onChange={handleInputChange}
-                            className="flex-grow"
+                          name="lettersAddress"
+                          value={settings.lettersAddress}
+                          onChange={handleInputChange}
+                          className="flex-grow"
                         />
-                        <ClickableTooltip content="This is the physical address where listeners need to send the letters that will be read during the podcast." />
+                        <ClickableTooltip
+                          content="This is the physical address where listeners need to send the letters that will be read during the podcast."/>
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block mb-1">Intro Music</label>
+                    <div className="flex items-center">
+                        <Checkbox
+                          name="includeIntroMusic"
+                          checked={settings.includeIntroMusic || false}
+                          onCheckedChange={handleCheckboxChange}
+                          id="includeIntroMusic"
+                        />
+                        <label htmlFor="includeIntroMusic" className="ml-2">
+                            Include Intro Music
+                        </label>
+                        <ClickableTooltip
+                          content="Check this box to include intro music in your podcast. It will be automatically download from Jamendo"/>
                     </div>
                 </div>
 
@@ -147,20 +173,22 @@ const PodcastSettings = () => {
                     <label className="block mb-1">Background Music</label>
                     <div className="flex items-center">
                         <Select
-                            name="backgroundMusic"
-                            value={settings.backgroundMusic}
-                            onValueChange={handleMusicChange}
+                          name="backgroundMusic"
+                          value={settings.backgroundMusic}
+                          onValueChange={handleMusicChange}
                         >
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a song" />
+                                <SelectValue placeholder="Select a song"/>
                             </SelectTrigger>
                             <SelectContent>
                                 {musicOptions.map(option => (
-                                    <SelectItem key={option.id} value={option.id.toString()}>{option.title}</SelectItem>
+                                  <SelectItem key={option.id}
+                                              value={option.id.toString()}>{option.title}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        <ClickableTooltip content="This song will be used as the podcast background music." />
+                        <ClickableTooltip
+                          content="This song will be used as the podcast background music."/>
                     </div>
                     {currentSample && currentSample.id !== -1 && (
                       <div className="mt-2 p-2 bg-gray-800 rounded">
@@ -184,30 +212,37 @@ const PodcastSettings = () => {
                     )}
                     {currentSample && currentSample.id === -1 && (
                       <div className="mt-2 p-2 bg-gray-800 rounded text-center">
-                        <p>The AI will automatically select a fitting song depending on the Podcast content</p>
+                          <p>The AI will automatically select a fitting song
+                              depending on the Podcast content</p>
                       </div>
                     )}
                 </div>
 
                 <div>
-                    <label className="block mb-1">Include Weather Information For</label>
+                    <label className="block mb-1">Include Weather Information
+                        For</label>
                     <div className="flex items-center">
                         <Select
-                            name="weatherInfo"
-                            value={settings.weatherInfo}
-                            onValueChange={(value) => handleInputChange({ target: { name: 'weatherInfo', value } })}
+                          name="weatherInfo"
+                          value={settings.weatherInfo}
+                          onValueChange={(value) => handleInputChange(
+                            {target: {name: 'weatherInfo', value}})}
                         >
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select weather info frequency" />
+                                <SelectValue
+                                  placeholder="Select weather info frequency"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="Never">Never</SelectItem>
                                 <SelectItem value="Today">Today</SelectItem>
-                                <SelectItem value="Tomorrow">Tomorrow</SelectItem>
-                                <SelectItem value="Next Week">Next Week</SelectItem>
+                                <SelectItem
+                                  value="Tomorrow">Tomorrow</SelectItem>
+                                <SelectItem value="Next Week">Next
+                                    Week</SelectItem>
                             </SelectContent>
                         </Select>
-                        <ClickableTooltip content="The podcast presenters will comment on the weather of the selected period starting from the date of the podcast generation." />
+                        <ClickableTooltip
+                          content="The podcast presenters will comment on the weather of the selected period starting from the date of the podcast generation."/>
                     </div>
                 </div>
 
@@ -222,7 +257,8 @@ const PodcastSettings = () => {
                             Your podcast settings have been successfully saved.
                         </DialogDescription>
                     </DialogHeader>
-                    <Button onClick={() => setShowConfirmation(false)}>OK</Button>
+                    <Button
+                      onClick={() => setShowConfirmation(false)}>OK</Button>
                 </DialogContent>
             </Dialog>
         </div>
