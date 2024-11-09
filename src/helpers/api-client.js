@@ -11,11 +11,13 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.response.use(
-    response => response,
-    error => {
-        alert(error.response.data.message || "Access forbidden")
-        return Promise.reject(error);
-    }
+  response => response,
+  error => {
+      if (error.response && error.response.status !== 404) {
+          alert(error.response.data.message || "Access forbidden");
+      }
+      return Promise.reject(error);
+  }
 );
 
 apiClient.interceptors.request.use(config => {
