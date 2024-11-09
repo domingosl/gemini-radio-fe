@@ -38,16 +38,18 @@ const PodcastSettings = () => {
 
             try {
                 const music = await apiClient.getBackgroundMusic();
-                setMusicOptions(music);
+                setMusicOptions([{ id: "-1", title: 'AI Selected' }, ...music]);
 
-                const currentMusicId = initialSettings.backgroundMusic || music[0]?.id.toString();
-                const selectedMusic = music.find(m => m.id.toString() === currentMusicId) || music[0];
+                const currentMusicId = initialSettings.backgroundMusic || musicOptions[0]?.id.toString();
+                const selectedMusic = musicOptions.find(m => m.id.toString() === currentMusicId) || musicOptions[0];
 
-                if (selectedMusic) {
+                if (selectedMusic.id !== "-1") {
                     setCurrentSample(selectedMusic);
-                    audioRef.current.src = `${API_BASE_URL}${selectedMusic.sample}`;
-                    setSettings(prev => ({ ...prev, backgroundMusic: selectedMusic.id.toString() }));
+                    audioRef.current.src = `${API_BASE_URL}/music/${selectedMusic.file}`;
                 }
+
+                setSettings(prev => ({ ...prev, backgroundMusic: selectedMusic.id.toString() }));
+
             } catch (error) {
                 console.error('Failed to fetch music options:', error);
             }
@@ -66,7 +68,7 @@ const PodcastSettings = () => {
         const selectedMusic = musicOptions.find(m => m.id.toString() === value);
         setSettings(prev => ({ ...prev, backgroundMusic: value }));
         setCurrentSample(selectedMusic);
-        audioRef.current.src = `${API_BASE_URL}${selectedMusic.sample}`;
+        audioRef.current.src = `${API_BASE_URL}/music/${selectedMusic.file}`;
         setIsPlaying(false);
     };
 
@@ -160,20 +162,30 @@ const PodcastSettings = () => {
                         </Select>
                         <ClickableTooltip content="This song will be used as the podcast background music." />
                     </div>
-                    {currentSample && (
-                        <div className="mt-2 p-2 bg-gray-800 rounded">
-                            <div className="flex items-center justify-between">
-                                <button onClick={togglePlay} type="button" className="p-1 bg-primary text-primary-foreground rounded">
-                                    {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                                </button>
-                                <div className="text-sm text-gray-300">
-                                    <span className="font-semibold">{currentSample.tags}</span> by{' '}
-                                    <a href={currentSample.attribution} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                                        {currentSample.author}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                    {currentSample && currentSample.id !== -1 && (
+                      <div className="mt-2 p-2 bg-gray-800 rounded">
+                          <div className="flex items-center justify-between">
+                              <button onClick={togglePlay} type="button"
+                                      className="p-1 bg-primary text-primary-foreground rounded">
+                                  {isPlaying ? <Pause size={16}/> : <Play
+                                    size={16}/>}
+                              </button>
+                              <div className="text-sm text-gray-300">
+                                  <span
+                                    className="font-semibold">{currentSample.tags}</span> by{' '}
+                                  <a href={currentSample.attribution}
+                                     target="_blank" rel="noopener noreferrer"
+                                     className="text-primary hover:underline">
+                                      {currentSample.author}
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                    )}
+                    {currentSample && currentSample.id === -1 && (
+                      <div className="mt-2 p-2 bg-gray-800 rounded text-center">
+                        <p>The AI will automatically select a fitting song depending on the Podcast content</p>
+                      </div>
                     )}
                 </div>
 
